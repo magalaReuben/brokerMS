@@ -3,7 +3,7 @@ from .forms import AgentForm, BrokerForm, ClientForm, RegisterForm, PostForm
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User, Group
-from .models import Agent, Broker, Client, Post
+from .models import Agent, Broker, Client, Post, Titles
 
 
 @login_required(login_url="/login")
@@ -16,8 +16,6 @@ def home(request):
 # Broker views
 @login_required(login_url="/login")
 def brokers(request):
-    print("brokers")
-    print(request.method)
     brokers = Broker.objects.all()
     if request.method ==  "POST":
         broker_id = request.POST.get("broker_id")
@@ -50,7 +48,6 @@ def create_broker(request):
 #client views
 @login_required(login_url="/login")
 def clients(request, pk):
-    print("clients")
     client_id = request.POST.get("client_id")
     clients = Client.objects.all()
     selected_clients = []
@@ -80,8 +77,8 @@ def create_client(request):
     return render(request, 'main/add_client.html', {"form": form})
 
 #Title Views
-def titles(request):
-    print("titles")
+def titles(request, pk):
+    titles = Titles.objects.all()
     if request.method == 'POST':
         form = PostForm(request.POST)
         if form.is_valid():
@@ -89,7 +86,7 @@ def titles(request):
             title.author = request.user
             title.save()
             return redirect('/home')
-    return render(request, 'main/titles.html')
+    return render(request, 'main/titles.html', {"titles": titles})
 
 #agents
 @login_required(login_url="/login")
@@ -100,10 +97,14 @@ def agents(request):
     print(agents)
     if request.method == 'POST':
         agent_id = request.POST.get("agent_id")
+        get_agent_id = request.POST.get("get_agent_id")
         if agent_id:
             agent = Agent.objects.get(id=agent_id)
             agent.delete()
-        return render(request, 'main/brokers.html',  {"brokers": brokers})
+            return render(request, 'main/agent.html',  {"agents": agents})
+        if get_agent_id:
+            agent = Agent.objects.get(id=get_agent_id)
+            return redirect(f"/titles/{get_agent_id}")
         return redirect('/create_agent')
     return render(request, 'main/agent.html',  {"agents": agents})
 
@@ -116,7 +117,7 @@ def create_agent(request):
             agent = form.save(commit=False)
             agent.save()
             agents = Agent.objects.all()
-            return render(request, 'main/agent.html',  {"agents": agents})
+            return redirect('/agents', {"agents": agents})
     else:
         form = AgentForm()
     return render(request, 'main/add_agent.html', {"form": form})

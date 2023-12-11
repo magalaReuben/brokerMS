@@ -45,6 +45,7 @@ class Agent(models.Model):
         return self.name
     
 class Titles(models.Model):
+    agent = models.ForeignKey('Agent', on_delete=models.CASCADE)
     file = models.FileField(upload_to='files/uploads/', null=True)
     block = models.CharField(max_length=45)
     location = models.CharField(max_length=45)

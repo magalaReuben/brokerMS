@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import AgentForm, BrokerForm, ClientForm, RegisterForm, PostForm
+from .forms import AgentForm, BrokerForm, ClientForm, RegisterForm, PostForm, TitleForm
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User, Group
@@ -39,7 +39,7 @@ def create_broker(request):
             broker = form.save(commit=False)
             broker.save()
             brokers = Broker.objects.all()
-            return render(request, 'main/brokers.html',  {"brokers": brokers})
+            return redirect('/brokers',  {"brokers": brokers})
     else:
         form = BrokerForm()
 
@@ -78,15 +78,34 @@ def create_client(request):
 
 #Title Views
 def titles(request, pk):
+    print("titles")
     titles = Titles.objects.all()
+    selected_titles = []
+    for title in titles:
+        if title.agent.id == pk:
+            selected_titles.append(title)
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        title_id = request.POST.get("title_id")
+        if title_id:
+            title = Titles.objects.get(id=title_id)
+            title.delete()
+            return render(request, 'main/titles.html',  {"titles": titles})
+        return redirect('/create_title')    
+    return render(request, 'main/titles.html', {"titles": selected_titles})
+
+def create_title(request):
+    print("create_title")
+    if request.method == 'POST':
+        form = TitleForm(request.POST,request.FILES)
         if form.is_valid():
             title = form.save(commit=False)
-            title.author = request.user
             title.save()
-            return redirect('/home')
-    return render(request, 'main/titles.html', {"titles": titles})
+            titles = Titles.objects.all()
+            print(titles)
+            render(request, 'main/titles.html', {"titles": titles})
+    else:
+        form = TitleForm()
+    return render(request, 'main/add_title.html', {"form": form})
 
 #agents
 @login_required(login_url="/login")

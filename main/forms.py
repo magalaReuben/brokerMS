@@ -36,4 +36,4 @@ class AgentForm(forms.ModelForm):
 class TitleForm(forms.ModelForm):
     class Meta:
         model = Titles
-        fields = ["file", "block", "location", "plot", "reason", "signature"]
+        fields = ["agent", "file", "block", "location", "plot", "reason", "signature"]

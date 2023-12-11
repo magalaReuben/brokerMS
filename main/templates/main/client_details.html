@@ -1,35 +1,20 @@
 {% extends 'main/base.html' %} {% block title %}Brokers{% endblock %} 
-{% block content %} {% for client in clients %}
-<div class="row align-items-end" style="margin-bottom: 10px;">
+{% block content %}
+<div class="column align-items-end" style="margin-bottom: 10px;">
   <div class="col">
-    <h2>{{ client.name }}</h2>
+    <h2>{{ client.name}}</h2>
   </div>
   <div class="col">
-    <form method="post">
-      {% csrf_token %}
-      <button
-        type="submit"
-        class="btn btn-primary"
-        name="get_client_broker_id"
-        value="{{ broker.id }}"
-      >
-        Details
-      </button>
-    </form>
+    <h2>{{ client.locaton}}</h2>
   </div>
   <div class="col">
-    <form method="post">
-      {% csrf_token %}
-      <button
-        type="submit"
-        class="btn btn-danger"
-        name="broker_id"
-        value="{{ broker.id }}"
-      >
-        Delete
-      </button>
-    </form>
+    <h2>{{ client.Amount_paid_by}}</h2>
   </div>
-{% empty %}
-{% endfor %} 
+  <div class="col">
+    <h2>{{ client.commision_paid}}</h2>
+  </div>
+  <div class="col">
+    <h2>{{ client.balance}}</h2>
+  </div>
+  </div>
 {% endblock %}

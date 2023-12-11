@@ -1,0 +1,49 @@
+{% extends 'main/base.html' %} {% block title %}Brokers{% endblock %} 
+{% block content %} {% for broker in brokers %}
+<div class="row align-items-end" style="margin-bottom: 10px;">
+  <div class="col">
+    <h2>{{ broker.name }}</h2>
+  </div>
+  <div class="col">
+    <form method="post">
+      {% csrf_token %}
+      <button
+        type="submit"
+        class="btn btn-primary"
+        name="get_client_broker_id"
+        value="{{ broker.id }}"
+      >
+        Clients
+      </button>
+    </form>
+  </div>
+  <div class="col">
+    <form method="post">
+      {% csrf_token %}
+      <button
+        type="submit"
+        class="btn btn-danger"
+        name="broker_id"
+        value="{{ broker.id }}"
+      >
+        Delete
+      </button>
+    </form>
+  </div>
+{% empty %}
+<h2>No Titles And Files</h2>
+{% endfor %} 
+<div class="row align-items-end" >
+  <form method="post">
+    {% csrf_token %}
+    <button
+      type="submit"
+      class="btn btn-success"
+      name="add-title"
+      value="add-title"
+    >
+      Add New New Title Or File
+    </button>
+  </form>
+</div>
+{% endblock %}

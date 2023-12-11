@@ -36,3 +36,27 @@ class Broker(models.Model):
     def __str__(self) -> str:
         return self.name
     
+class Agent(models.Model):
+    name = models.CharField(max_length=45)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self) -> str:
+        return self.name
+    
+class Titles(models.Model):
+    file = models.FileField(upload_to='files/uploads/', null=True)
+    block = models.CharField(max_length=45)
+    location = models.CharField(max_length=45)
+    plot = models.CharField(max_length=45)
+    reason = models.CharField(max_length=45)
+    signature = models.FileField(upload_to='files/uploads/', null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self) -> str:
+        return self.block + "\n" + self.location + "\n" + self.plot + "\n" + self.reason
+    
+    
+    
+    

@@ -26,7 +26,7 @@ class ClientForm(forms.ModelForm):
     class Meta:
         model = Client
         Amount_paid_by = forms.DateTimeField(widget=forms.DateInput(attrs={'placeholder': 'YYYY-MM-DD HH:MM:SS'}))
-        fields = ["broker", "name", "locaton", "Amount_paid", "commision", "commision_paid"]
+        fields = ["broker", "name", "phone", "locaton", "Amount_paid", "commision", "commision_paid"]
     
 class AgentForm(forms.ModelForm):
     class Meta:

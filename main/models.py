@@ -19,6 +19,7 @@ class Client(models.Model):
     name = models.CharField(max_length=45)
     locaton = models.CharField(max_length=45)
     Amount_paid = models.IntegerField()
+    phone = models.CharField(max_length=45)
     commision = models.IntegerField()
     commision_paid = models.IntegerField()
     signature = models.FileField(upload_to='uploads/', null=True)
@@ -27,6 +28,12 @@ class Client(models.Model):
     
     def __str__(self) -> str:
         return self.name
+    
+class Transaction(models.Model):
+    client = models.ForeignKey('Client', on_delete=models.CASCADE)
+    amount = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    balance = models.IntegerField()
     
 class Broker(models.Model):
     name = models.CharField(max_length=45)

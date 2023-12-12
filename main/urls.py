@@ -13,5 +13,6 @@ urlpatterns = [
     path('create_client', views.create_client, name='create_client'),
     path('create_title', views.create_title, name='create_title'),
     path('index', views.index, name='index'),
+    path('payment', views.payment, name='payment'),
     path('sign-up', views.sign_up, name='sign_up'),
 ]

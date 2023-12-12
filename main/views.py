@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User, Group
 from django.db.models import Q
-from .models import Agent, Broker, Client, Post, Titles
+from .models import Agent, Broker, Client, Post, Titles, Transaction
 
 
 @login_required(login_url="/login")
@@ -27,6 +27,22 @@ def index(request):
     else:
         brokers = Broker.objects.all()
         return render(request, 'main/brokers.html',  {"brokers": brokers})
+    
+@login_required(login_url="/login")
+def payment(request):
+    client_id = request.POST.get("client_id")
+    amount_paid = request.POST.get("payment")
+    if amount_paid != "":
+        client = Client.objects.get(id=client_id)
+        client.commision_paid = (int(amount_paid) + int(client.commision_paid))
+        client.save() 
+        transaction = Transaction.objects.create(client=client, amount=amount_paid, balance=client.commision_paid)
+        transaction.save()
+        transactions = Transaction.objects.filter(client=client)
+    client = Client.objects.get(id=client_id)
+    balance = client.commision - client.commision_paid
+    return render(request, 'main/client_details.html',  {"client": client, "balance": balance, "transactions": transactions})
+    
 
 
 # Broker views
@@ -74,8 +90,8 @@ def clients(request, pk):
         client_id = request.POST.get("client_id")
         if client_id:
             client = Client.objects.get(id=client_id)
-            print(client)
-            return render(request, 'main/client_details.html',  {"client": client})
+            balance = client.commision - client.commision_paid
+            return render(request, 'main/client_details.html',  {"client": client, "balance": balance})
         return redirect("/create_client")
     return render(request, 'main/clients.html', {"clients":selected_clients})
 

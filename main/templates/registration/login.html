@@ -7,7 +7,7 @@
   </div>
 <form method="post">
   {% csrf_token %}{{form|crispy}}
-  <p>Don't have an account? Create one <a href="/sign-up">Here</a>!</p>
+  {% comment %} <p>Don't have an account? Create one <a href="/sign-up">Here</a>!</p> {% endcomment %}
   <button type="submit" class="btn btn-success">Login</button>
 </form>
 {% endblock %}

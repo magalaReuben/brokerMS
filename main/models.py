@@ -18,9 +18,9 @@ class Client(models.Model):
     broker = models.ForeignKey('Broker', on_delete=models.CASCADE)
     name = models.CharField(max_length=45)
     locaton = models.CharField(max_length=45)
-    Amount_paid_by = models.DateTimeField()
+    Amount_paid = models.IntegerField()
+    commision = models.IntegerField()
     commision_paid = models.IntegerField()
-    balance = models.IntegerField()
     signature = models.FileField(upload_to='uploads/', null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -30,6 +30,7 @@ class Client(models.Model):
     
 class Broker(models.Model):
     name = models.CharField(max_length=45)
+    number = models.CharField(max_length=45)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

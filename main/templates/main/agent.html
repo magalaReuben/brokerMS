@@ -1,38 +1,52 @@
 {% extends 'main/base.html' %} {% block title %}Agents{% endblock %} 
-{% block content %} {% for agent in agents %}
-<div class="row align-items-end" style="margin-bottom: 10px;">
-  <div class="col">
-    <h2>{{ agent.name }}</h2>
-  </div>
-  <div class="col">
-    <form method="post">
-      {% csrf_token %}
-      <button
-        type="submit"
-        class="btn btn-primary"
-        name="get_agent_id"
-        value="{{ agent.id }}"
-      >
-        Details
-      </button>
-    </form>
-  </div>
-  <div class="col">
-    <form method="post">
-      {% csrf_token %}
-      <button
-        type="submit"
-        class="btn btn-danger"
-        name="agent_id"
-        value="{{ agent.id }}"
-      >
-        Delete
-      </button>
-    </form>
-  </div>
-{% empty %}
-<h2>No Agents yet. Add Agent</h2>
-{% endfor %} 
+{% block content %} 
+<h1>Agents</h1>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Details</th>
+      <th scope="col">Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for agent in agents %}
+    <tr>
+      <td>{{ agent.name }}</td>
+      <td>
+        <form method="post">
+          {% csrf_token %}
+          <button
+            type="submit"
+            class="btn btn-primary"
+            name="get_agent_id"
+            value="{{ agent.id }}"
+          >
+            Details
+          </button>
+        </form>
+      </td>
+      <td>
+        <form method="post">
+          {% csrf_token %}
+          <button
+            type="submit"
+            class="btn btn-danger"
+            name="agent_id"
+            value="{{ agent.id }}"
+          >
+            Delete
+          </button>
+        </form>
+      </td>
+      {% empty %}
+      <div class="pt-5">
+        <img src="https://live.staticflickr.com/65535/53391592740_d56e81b830_w.jpg" alt="empty" style="margin-left: 40%;"/>
+        <h2 align="center">No Documents</h2>
+      </div>
+    {% endfor %} 
+  </tbody>
+</table>
 <div class="row align-items-end" >
   <form method="post">
     {% csrf_token %}

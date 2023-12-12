@@ -3,6 +3,7 @@ from .forms import AgentForm, BrokerForm, ClientForm, RegisterForm, PostForm, Ti
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User, Group
+from django.db.models import Q
 from .models import Agent, Broker, Client, Post, Titles
 
 
@@ -11,6 +12,21 @@ def home(request):
     print("home")
     posts = Post.objects.all()
     return render(request, 'main/home.html', {"posts": posts})
+
+@login_required(login_url="/login")
+def index(request):
+    search_client = request.GET.get('search')
+    print(search_client)
+    if search_client:
+        client = Client.objects.filter(Q(name__icontains=search_client))
+        print(len(client))
+        if len(client) == 0:
+            return render(request, 'main/clients.html', {"clients": []})
+        else:
+            return render(request, 'main/clients.html', {"clients": client})
+    else:
+        brokers = Broker.objects.all()
+        return render(request, 'main/brokers.html',  {"brokers": brokers})
 
 
 # Broker views
@@ -71,6 +87,7 @@ def create_client(request):
             client = form.save(commit=False)
             client.save()
             clients = Client.objects.all()
+            brokers = Broker.objects.all()
             return render(request, 'main/clients.html',  {"clients": clients})
     else:
         form = ClientForm()      

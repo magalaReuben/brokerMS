@@ -12,5 +12,6 @@ urlpatterns = [
     path('create_broker', views.create_broker, name='create_broker'),
     path('create_client', views.create_client, name='create_client'),
     path('create_title', views.create_title, name='create_title'),
+    path('index', views.index, name='index'),
     path('sign-up', views.sign_up, name='sign_up'),
 ]

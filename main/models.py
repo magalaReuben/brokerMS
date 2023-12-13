@@ -54,17 +54,26 @@ class Agent(models.Model):
     
 class Titles(models.Model):
     agent = models.ForeignKey('Agent', on_delete=models.CASCADE)
+    name = models.CharField(max_length=45)
     file = models.FileField(upload_to='files/uploads/', null=True)
     block = models.CharField(max_length=45)
     location = models.CharField(max_length=45)
     plot = models.CharField(max_length=45)
     reason = models.CharField(max_length=45)
-    signature = models.FileField(upload_to='files/uploads/', null=True)
+    price = models.IntegerField()
+    price_paid = models.IntegerField()
+    reason = models.TextField(max_length=250)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self) -> str:
         return self.block + "\n" + self.location + "\n" + self.plot + "\n" + self.reason
+    
+class TitleTransactions(models.Model):
+    title = models.ForeignKey('Titles', on_delete=models.CASCADE)
+    amount = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    balance = models.IntegerField()
     
     
     

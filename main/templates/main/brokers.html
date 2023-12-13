@@ -19,7 +19,6 @@
       <th scope="col">Name</th>
       <th scope="col">Phone Number</th>
       <th scope="col">Clients</th>
-      <th scope="col">Delete</th>
     </tr>
   </thead>
   <tbody>
@@ -40,7 +39,7 @@
           </button>
         </form>
       </td>
-      <td>
+      {% comment %} <td>
         <form method="post">
           {% csrf_token %} 
           <button
@@ -52,7 +51,7 @@
             Delete
           </button>
         </form>
-      </td>
+      </td> {% endcomment %}
       {% empty %}
     <h2>No Brokers yet. Add Brokers</h2>
     {% endfor %} 

@@ -41,4 +41,29 @@
   </form>
 </div>
 <div>
+<h1>Transactions</h1>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Amount</th>
+      <th scope="col">Balance</th>
+      <th scope="col">Date</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for transaction in transactions %}
+  <tr>
+    <td>{{ transaction.amount }}</td>
+    <td>{{ transaction.balance }}</td>
+    <td>{{ transaction.created_at }}</td>
+  {% empty %}
+  <div class="pt-5">
+    <img src="https://live.staticflickr.com/65535/53391592740_d56e81b830_w.jpg" alt="empty" height="100px" style="margin-left: 40%;"/>
+    <h2 align="center">No Transaction or Topups yet</h2>
+  </div>
+  {% endfor %} 
+</tbody>
+</table>
+</div>
+<div>
 {% endblock %}

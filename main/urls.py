@@ -14,5 +14,7 @@ urlpatterns = [
     path('create_title', views.create_title, name='create_title'),
     path('index', views.index, name='index'),
     path('payment', views.payment, name='payment'),
+    path('document_payment', views.document_payment, name='document_payment'),
+    path('documents', views.documents, name='documents'),
     path('sign-up', views.sign_up, name='sign_up'),
 ]

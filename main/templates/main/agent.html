@@ -6,7 +6,7 @@
     <tr>
       <th scope="col">Name</th>
       <th scope="col">Details</th>
-      <th scope="col">Delete</th>
+      {% comment %} <th scope="col">Delete</th> {% endcomment %}
     </tr>
   </thead>
   <tbody>
@@ -26,7 +26,7 @@
           </button>
         </form>
       </td>
-      <td>
+      {% comment %} <td>
         <form method="post">
           {% csrf_token %}
           <button
@@ -38,7 +38,7 @@
             Delete
           </button>
         </form>
-      </td>
+      </td> {% endcomment %}
       {% empty %}
       <div class="pt-5">
         <img src="https://live.staticflickr.com/65535/53391592740_d56e81b830_w.jpg" alt="empty" style="margin-left: 40%;"/>

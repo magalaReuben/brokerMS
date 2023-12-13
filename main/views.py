@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User, Group
 from django.db.models import Q
-from .models import Agent, Broker, Client, Post, Titles, Transaction
+from .models import Agent, Broker, Client, Post, TitleTransactions, Titles, Transaction
 
 
 @login_required(login_url="/login")
@@ -12,6 +12,30 @@ def home(request):
     print("home")
     posts = Post.objects.all()
     return render(request, 'main/home.html', {"posts": posts})
+
+def documents(request):
+    title_id = request.POST.get("title_id")
+    if title_id:
+        title = Titles.objects.get(id=title_id)
+        balance = title.price - title.price_paid
+        transactions = TitleTransactions.objects.filter(title=title)
+    return render(request, 'main/documents.html', {"title": title, "balance": balance, "transactions": transactions})
+
+@login_required(login_url="/login")
+def document_payment(request):
+    title_id = request.POST.get("title_id")
+    amount_paid = request.POST.get("payment")
+    if amount_paid != "":
+        title = Titles.objects.get(id=title_id)
+        title.price_paid = (int(amount_paid) + int(title.price_paid))
+        title.save() 
+        balance = title.price - title.price_paid
+        transaction = TitleTransactions.objects.create(title=title, amount=amount_paid, balance=balance)
+        transaction.save()
+        transactions = TitleTransactions.objects.filter(title=title)
+    title = Titles.objects.get(id=title_id)
+    balance = title.price - title.price_paid
+    return render(request, 'main/documents.html', {"title": title, "balance": balance, "transactions": transactions})
 
 @login_required(login_url="/login")
 def index(request):
@@ -36,7 +60,8 @@ def payment(request):
         client = Client.objects.get(id=client_id)
         client.commision_paid = (int(amount_paid) + int(client.commision_paid))
         client.save() 
-        transaction = Transaction.objects.create(client=client, amount=amount_paid, balance=client.commision_paid)
+        balance = client.commision - client.commision_paid
+        transaction = Transaction.objects.create(client=client, amount=amount_paid, balance=balance)
         transaction.save()
         transactions = Transaction.objects.filter(client=client)
     client = Client.objects.get(id=client_id)
@@ -91,7 +116,8 @@ def clients(request, pk):
         if client_id:
             client = Client.objects.get(id=client_id)
             balance = client.commision - client.commision_paid
-            return render(request, 'main/client_details.html',  {"client": client, "balance": balance})
+            transactions = Transaction.objects.filter(client=client)
+            return render(request, 'main/client_details.html',  {"client": client, "balance": balance, "transactions": transactions})
         return redirect("/create_client")
     return render(request, 'main/clients.html', {"clients":selected_clients})
 
@@ -103,8 +129,14 @@ def create_client(request):
             client = form.save(commit=False)
             client.save()
             clients = Client.objects.all()
-            brokers = Broker.objects.all()
-            return render(request, 'main/clients.html',  {"clients": clients})
+            selected_clients = []
+            for client in clients:
+                if client.broker.id == form.data['broker']:
+                    selected_clients.append(client)
+            balance = client.commision - client.commision_paid
+            transaction = Transaction.objects.create(client=client, amount=form.data['Amount_paid'], balance=balance)
+            transaction.save()
+            return redirect('/clients/'+str(form.data['broker']),  {"clients": selected_clients})
     else:
         form = ClientForm()      
     return render(request, 'main/add_client.html', {"form": form})
@@ -134,8 +166,10 @@ def create_title(request):
             title = form.save(commit=False)
             title.save()
             titles = Titles.objects.all()
-            print(titles)
-            render(request, 'main/titles.html', {"titles": titles})
+            balance = title.price - title.price_paid
+            transaction = TitleTransactions(title=title, amount=title.price_paid, balance=balance)
+            transaction.save()
+            return redirect('/titles/'+str(form.data['agent']),  {"titles": titles})
     else:
         form = TitleForm()
     return render(request, 'main/add_title.html', {"form": form})

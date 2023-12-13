@@ -1,6 +1,48 @@
 {% extends 'main/base.html' %} {% block title %}titles and documents{% endblock %} 
-{% block content %} {% for title in titles %}
-<div class="col align-items-end" style="margin-bottom: 10px;">
+{% block content %}
+<h1>Clients</h1>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">File Name</th>
+      <th scope="col">Date Added</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for title in titles %}
+  <tr>
+    <td>{{ title.name }}</td>
+    <td>{{ title.created_at }}</td>
+    <td>
+      <form method="post" action={% url 'documents' %}>
+        {% csrf_token %}
+        <input type="hidden" name="title_id" value="{{ title.id }}" />
+        <input type="hidden" name="title_name" value="{{ title.name }}" />
+        <input type="hidden" name="title_file" value="{{ title.file }}" />
+        <input type="hidden" name="title_block" value="{{ title.block }}" />
+        <input type="hidden" name="title_location" value="{{ title.location }}" />
+        <input type="hidden" name="title_plot" value="{{ title.plot }}" />
+        <input type="hidden" name="title_reason" value="{{ title.reason }}" />
+        <input type="hidden" name="title_signature" value="{{ title.signature }}" />
+        <input type="hidden" name="title_price" value="{{ title.price }}" />
+        <input type="hidden" name="title_price_paid" value="{{ title.price_paid }}" />
+        <input type="hidden" name="title_created_at" value="{{ title.created_at }}" />
+        <button
+          type="submit"
+          class="btn btn-success"
+        >
+          visit
+        </button>
+      </form>
+    </td>
+  {% empty %}
+  <div class="pt-5">
+    <img src="https://live.staticflickr.com/65535/53391592740_d56e81b830_w.jpg" alt="empty" style="margin-left: 40%;"/>
+    <h2 align="center">No Docs yet</h2>
+  </div>
+  {% endfor %} 
+{% comment %} <div class="col align-items-end" style="margin-bottom: 10px;">
   <div class="col">
     <h2>{{ title.file }}</h2>
   </div>
@@ -24,8 +66,8 @@
   <img src="https://live.staticflickr.com/65535/53391592740_d56e81b830_w.jpg" alt="empty" style="margin-left: 40%;"/>
   <h2 align="center">No Titles Or Files</h2>
 </div>
-{% endfor %} 
-<div class="row align-items-end" >
+{% endfor %}  {% endcomment %}
+<div>
   <form method="post">
     {% csrf_token %}
     <button

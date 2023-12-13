@@ -17,4 +17,5 @@ urlpatterns = [
     path('document_payment', views.document_payment, name='document_payment'),
     path('documents', views.documents, name='documents'),
     path('sign-up', views.sign_up, name='sign_up'),
+    path('print/<int:pk>', views.print_pdf, name='print')
 ]

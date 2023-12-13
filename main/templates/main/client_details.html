@@ -64,6 +64,19 @@
   {% endfor %} 
 </tbody>
 </table>
+<div class="row align-items-end pt-5 pb-2" >
+  <form method="post">
+    {% csrf_token %}
+    <button
+      type="submit"
+      class="btn btn-success"
+      name="print_value"
+      value="{{client.id}}"
+    >
+      Print Transactions
+    </button>
+  </form>
+</div>
 </div>
 <div>
 {% endblock %}

@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+
+from main.utils import render_to_pdf
 from .forms import AgentForm, BrokerForm, ClientForm, RegisterForm, PostForm, TitleForm
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import login, logout, authenticate
@@ -6,6 +8,18 @@ from django.contrib.auth.models import User, Group
 from django.db.models import Q
 from .models import Agent, Broker, Client, Post, TitleTransactions, Titles, Transaction
 
+@login_required(login_url="/login")
+def print_pdf(request, pk):
+    template_name = "main/client_transactions.html"
+    client = Client.objects.get(id=pk)
+    transactions = Transaction.objects.filter(client=client)
+    return render_to_pdf(
+        template_name,
+        {
+            "transactions": transactions, "client": client
+        }
+        )
+    
 
 @login_required(login_url="/login")
 def home(request):
@@ -15,6 +29,7 @@ def home(request):
 
 def documents(request):
     title_id = request.POST.get("title_id")
+    print_value = request.POST.get("print_value")
     if title_id:
         title = Titles.objects.get(id=title_id)
         balance = title.price - title.price_paid
@@ -74,6 +89,11 @@ def payment(request):
 @login_required(login_url="/login")
 def brokers(request):
     brokers = Broker.objects.all()
+    broker_balance_dict = {}
+    for broker in brokers:
+        clients = Client.objects.filter(broker=broker)
+        balance = sum((client.commision - client.commision_paid) for client in clients)
+        broker_balance_dict[broker] = balance
     if request.method ==  "POST":
         broker_id = request.POST.get("broker_id")
         get_client_broker_id = request.POST.get("get_client_broker_id")
@@ -86,7 +106,7 @@ def brokers(request):
             clients = Client.objects.filter(broker=broker)
             return redirect(f"/clients/{get_client_broker_id}")
         return redirect("/create_broker")
-    return render(request, 'main/brokers.html',  {"brokers": brokers})
+    return render(request, 'main/brokers.html',  {"brokers": brokers, "broker_balance_dict": broker_balance_dict})
 
 def create_broker(request):
     print("create_broker")
@@ -113,11 +133,14 @@ def clients(request, pk):
             selected_clients.append(client)
     if request.method ==  "POST":
         client_id = request.POST.get("client_id")
+        value_id = request.POST.get("print_value")
         if client_id:
             client = Client.objects.get(id=client_id)
             balance = client.commision - client.commision_paid
             transactions = Transaction.objects.filter(client=client)
             return render(request, 'main/client_details.html',  {"client": client, "balance": balance, "transactions": transactions})
+        if value_id:
+            return redirect(f'/print/{value_id}')
         return redirect("/create_client")
     return render(request, 'main/clients.html', {"clients":selected_clients})
 

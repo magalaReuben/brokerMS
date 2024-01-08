@@ -202,7 +202,10 @@ def create_title(request):
 def agents(request):
     print("agents")
     agents = Agent.objects.all()
-    selected_agents = []
+    selected_agents = []@login_required(login_url="/login")
+def payment(request):
+    client_id = request.POST.get("client_id")
+    amount_paid = request.POST.get("payment")
     print(agents)
     if request.method == 'POST':
         agent_id = request.POST.get("agent_id")

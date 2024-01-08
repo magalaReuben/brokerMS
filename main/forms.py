@@ -31,7 +31,7 @@ class ClientForm(forms.ModelForm):
 class AgentForm(forms.ModelForm):
     class Meta:
         model = Agent
-        fields = ["name"]
+        fields = ["name", "phone"]
         
 class TitleForm(forms.ModelForm):
     class Meta:

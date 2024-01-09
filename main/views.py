@@ -9,7 +9,8 @@ from django.db.models import Q
 from .models import Agent, Broker, Client, Post, TitleTransactions, Titles, Transaction
 
 @login_required(login_url="/login")
-def print_pdf(request, pk):
+def print_pdf(request, pk, type):
+    print(type)
     template_name = "main/client_transactions.html"
     client = Client.objects.get(id=pk)
     transactions = Transaction.objects.filter(client=client)
@@ -29,11 +30,14 @@ def home(request):
 
 def documents(request):
     title_id = request.POST.get("title_id")
+    print(f"Title id: {title_id}")
     print_value = request.POST.get("print_value")
     if title_id:
         title = Titles.objects.get(id=title_id)
         balance = title.price - title.price_paid
         transactions = TitleTransactions.objects.filter(title=title)
+    if print_value:
+        return redirect(f"/print/{print_value}")
     return render(request, 'main/documents.html', {"title": title, "balance": balance, "transactions": transactions})
 
 @login_required(login_url="/login")
@@ -202,7 +206,26 @@ def create_title(request):
 def agents(request):
     print("agents")
     agents = Agent.objects.all()
-    selected_agents = []@login_required(login_url="/login")
+    selected_agents = []
+    print(agents)
+    if request.method == 'POST':
+        agent_id = request.POST.get("agent_id")
+        get_agent_id = request.POST.get("get_agent_id")
+        if agent_id:
+            agent = Agent.objects.get(id=agent_id)
+            agent.delete()
+            return render(request, 'main/agent.html',  {"agents": agents})
+        if get_agent_id:
+            agent = Agent.objects.get(id=get_agent_id)
+            return redirect(f"/titles/{get_agent_id}")
+        return redirect('/create_agent')
+    return render(request, 'main/agent.html',  {"agents": agents})
+    
+    
+    
+    
+    
+    
 def payment(request):
     client_id = request.POST.get("client_id")
     amount_paid = request.POST.get("payment")

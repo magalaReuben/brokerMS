@@ -14,7 +14,7 @@
   {% for client in clients %}
   <tr>
     <td>{{ client.name }}</td>
-    <td>{{ client.phone }}</td>
+    {% comment %} <td>{{ client.phone }}</td> {% endcomment %}
     <td>{{ client.phone }}</td>
     <td>
       <form method="post">

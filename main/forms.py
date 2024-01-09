@@ -34,6 +34,7 @@ class AgentForm(forms.ModelForm):
         fields = ["name", "phone"]
         
 class TitleForm(forms.ModelForm):
+    file = forms.FileField(required=False)
     class Meta:
         model = Titles
         fields = ["name", "agent", "file", "block", "price", "price_paid", "location", "plot", "reason"]

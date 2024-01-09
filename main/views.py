@@ -10,16 +10,26 @@ from .models import Agent, Broker, Client, Post, TitleTransactions, Titles, Tran
 
 @login_required(login_url="/login")
 def print_pdf(request, pk, type):
-    print(type)
-    template_name = "main/client_transactions.html"
-    client = Client.objects.get(id=pk)
-    transactions = Transaction.objects.filter(client=client)
-    return render_to_pdf(
-        template_name,
-        {
-            "transactions": transactions, "client": client
-        }
-        )
+    if type == "titles":
+        template_name = "main/title_transactions.html"
+        title = Titles.objects.get(id=pk)
+        transactions = TitleTransactions.objects.filter(title=title)
+        return render_to_pdf(
+            template_name,
+            {
+                "transactions": transactions, "agent": title
+            }
+            )
+    if type == "clients":
+        template_name = "main/client_transactions.html"
+        client = Client.objects.get(id=pk)
+        transactions = Transaction.objects.filter(client=client)
+        return render_to_pdf(
+            template_name,
+            {
+                "transactions": transactions, "client": client
+            }
+            )
     
 
 @login_required(login_url="/login")
@@ -37,7 +47,7 @@ def documents(request):
         balance = title.price - title.price_paid
         transactions = TitleTransactions.objects.filter(title=title)
     if print_value:
-        return redirect(f"/print/{print_value}")
+        return redirect(f"/print/{print_value}/titles")
     return render(request, 'main/documents.html', {"title": title, "balance": balance, "transactions": transactions})
 
 @login_required(login_url="/login")
@@ -144,7 +154,7 @@ def clients(request, pk):
             transactions = Transaction.objects.filter(client=client)
             return render(request, 'main/client_details.html',  {"client": client, "balance": balance, "transactions": transactions})
         if value_id:
-            return redirect(f'/print/{value_id}')
+            return redirect(f'/print/{value_id}/clients')
         return redirect("/create_client")
     return render(request, 'main/clients.html', {"clients":selected_clients})
 
